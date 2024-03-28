@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    env_file:
+      - .env
+    container_name: nest-postgres
+    volumes:
+      - ./docker_volumes/postgres:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    env_file:
+      - .env
+    container_name: nest-pgadmin4
+    ports:
+      - '5050:80'
+    volumes:
+      - ./docker_volumes/pgadmin4:/var/lib/pgadmin
+    depends_on:
+      - db
