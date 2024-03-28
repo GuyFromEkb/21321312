@@ -1,10 +1,17 @@
 {
   "singleQuote": true,
   "trailingComma": "all",
+  "printWidth": 110,
+  "tabWidth": 2,
+  "useTabs": false,
   "semi": true,
   "endOfLine": "auto",
   "plugins": ["@ianvs/prettier-plugin-sort-imports"],
   "importOrder": ["^@*$", "", "^~", "", "^[./]"],
-  "importOrderParserPlugins": ["typescript", "jsx", "decorators-legacy"],
+  "importOrderParserPlugins": [
+    "typescript",
+    "classProperties",
+    "decorators-legacy"
+  ],
   "importOrderTypeScriptVersion": "5.0.0"
 }
