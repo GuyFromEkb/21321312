@@ -1,22 +1,22 @@
-import type { Config } from 'jest';
-import { pathsToModuleNameMapper } from 'ts-jest';
+import type { Config } from "jest";
+import { pathsToModuleNameMapper } from "ts-jest";
 
-import { compilerOptions } from '../tsconfig.json';
+import { compilerOptions } from "../tsconfig.json";
 
 const config: Config = {
-  moduleFileExtensions: ['js', 'json', 'ts'],
-  testEnvironment: 'node',
-  testRegex: '.e2e-spec.ts$',
+  moduleFileExtensions: ["js", "json", "ts"],
+  testEnvironment: "node",
+  testRegex: ".e2e-spec.ts$",
   transform: {
-    '^.+\\.(t|j)s$': 'ts-jest',
+    "^.+\\.(t|j)s$": "ts-jest",
   },
-  collectCoverageFrom: ['**/*.(t|j)s'],
-  coverageDirectory: './coverage',
-  rootDir: '../',
-  roots: ['<rootDir>'],
+  collectCoverageFrom: ["**/*.(t|j)s"],
+  coverageDirectory: "./coverage",
+  rootDir: "../",
+  roots: ["<rootDir>"],
   modulePaths: [compilerOptions.baseUrl],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
-    prefix: '<rootDir>/',
+    prefix: "<rootDir>/",
   }),
 };
 

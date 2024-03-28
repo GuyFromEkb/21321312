@@ -1,14 +1,14 @@
-import { Migrator } from '@mikro-orm/migrations';
-import { Options, PostgreSqlDriver } from '@mikro-orm/postgresql';
+import { Migrator } from "@mikro-orm/migrations";
+import { Options, PostgreSqlDriver } from "@mikro-orm/postgresql";
 
 //Нужен относительный путь, для package.json
-import { envConfigService } from '../../common/provider/envConfigServiceProvider';
+import { envConfigService } from "../../common/provider/envConfigServiceProvider";
 
 const rootDir = process.cwd();
 
 const ormConfig: Options = {
-  entities: [rootDir + '/**/*.entity.js'],
-  entitiesTs: [rootDir + '/**/*.entity.ts'],
+  entities: [rootDir + "/**/*.entity.js"],
+  entitiesTs: [rootDir + "/**/*.entity.ts"],
   driver: PostgreSqlDriver,
   host: envConfigService.env.POSTGRES_HOST,
   port: +envConfigService.env.POSTGRES_PORT,
@@ -18,7 +18,7 @@ const ormConfig: Options = {
   debug: true,
   extensions: [Migrator],
   migrations: {
-    path: __dirname + '/../migrations/',
+    path: __dirname + "/../migrations/",
   },
 };
 

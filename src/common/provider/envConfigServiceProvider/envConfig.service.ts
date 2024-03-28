@@ -1,4 +1,4 @@
-import 'dotenv/config'; // important!!
+import "dotenv/config"; // important!!
 
 export class EnvConfigService {
   constructor() {}
