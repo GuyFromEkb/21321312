@@ -1,4 +1,4 @@
-import { ValidationPipe } from "@nestjs/common";
+import { Logger, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
@@ -13,14 +13,16 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle("NestJs microOrm Jwt")
-    .setDescription(
-      `To generate and download a Swagger JSON file /api-json assuming that your Swagger documentation is available under .../api)`,
-    )
+    .setDescription(`To generate and download a Swagger JSON file /api-json`)
     .setVersion("1.0")
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup("api", app, document);
 
-  await app.listen(port);
+  await app.listen(port, "0.0.0.0");
+
+  const appUrl = await app.getUrl();
+  Logger.log(`running on: ${appUrl}`, "NestApplication");
+  Logger.log(`running on: ${appUrl}/api`, "Swagger");
 }
 bootstrap();
