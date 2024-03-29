@@ -3,6 +3,7 @@ import { BeforeCreate, Entity, EntityRepositoryType, Enum, Opt, Property, wrap }
 import { PrimaryGeneratedGuid } from "~common/decorator/PrimaryGeneratedGuid";
 import { envConfigService } from "~common/provider/envConfigServiceProvider";
 import { hashUserPassword } from "~common/util/hashUserPassword";
+import type { UserResponse } from "~user/response/user.response";
 
 import { UserRepository } from "./user.repository";
 
@@ -31,7 +32,7 @@ export class UserEntity {
   role: UserRole & Opt = UserRole.User;
 
   @Property({ default: null, nullable: true })
-  bio?: string;
+  bio?: string | null;
 
   @Property()
   createdAt: Date & Opt = new Date();
@@ -44,7 +45,7 @@ export class UserEntity {
     this.password = await hashUserPassword(this.password, +envConfigService.env.USER_PASSWORD_SALT_ROUNDS);
   }
 
-  toJSON(method?: "create" | "login") {
+  toJSON(method?: "create" | "login"): UserResponse {
     const o = wrap<UserEntity>(this).toObject();
 
     if (method === "create") {
@@ -54,6 +55,6 @@ export class UserEntity {
     delete o.createdAt;
     delete o.updatedAt;
 
-    return o;
+    return o as UserResponse;
   }
 }
