@@ -2,7 +2,7 @@ import { MikroOrmModule } from "@mikro-orm/nestjs";
 import { Module } from "@nestjs/common";
 
 import { EnvConfigServiceProvider } from "~common/provider/envConfigServiceProvider";
-import ormConfig from "~db/config/mikro-orm.config";
+import ormConfig from "~db/config/orm.config";
 import { UserModule } from "~user/user.module";
 
 import { AppController } from "./app.controller";

@@ -1,33 +1,59 @@
-import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
+import { BeforeCreate, Entity, EntityRepositoryType, Enum, Opt, Property, wrap } from "@mikro-orm/core";
 
-import { getUtcDateTime } from "~common/util/getUtcDateTime";
+import { PrimaryGeneratedGuid } from "~common/decorator/PrimaryGeneratedGuid";
+import { envConfigService } from "~common/provider/envConfigServiceProvider";
+import { hashUserPassword } from "~common/util/hashUserPassword";
 
-@Entity({ tableName: "users" })
+import { UserRepository } from "./user.repository";
+
+export enum UserRole {
+  Admin = "ADMIN",
+  Moderator = "MODERATOR",
+  User = "USER",
+}
+@Entity({ tableName: "users", repository: () => UserRepository })
 export class UserEntity {
-  @PrimaryKey({ type: "uuid" })
+  [EntityRepositoryType]?: UserRepository;
+
+  @PrimaryGeneratedGuid()
   id: string;
 
-  @Property()
+  @Property({ unique: true })
   username!: string;
 
-  @Property()
+  @Property({ unique: true })
   email!: string;
 
   @Property({ hidden: true })
   password!: string;
 
+  @Enum(() => UserRole)
+  role: UserRole & Opt = UserRole.User;
+
   @Property({ default: null, nullable: true })
   bio?: string;
 
   @Property()
-  createdAt = getUtcDateTime();
+  createdAt: Date & Opt = new Date();
 
-  @Property({ onUpdate: () => getUtcDateTime() })
-  updatedAt = getUtcDateTime();
+  @Property({ onUpdate: () => new Date() })
+  updatedAt: Date & Opt = new Date();
 
-  // @BeforeUpdate()
-  // @BeforeCreate()
-  // private async hashPassword() {
-  //   this.password = await hash(this.password, USER_PASSWORD_SALT);
-  // }
+  @BeforeCreate()
+  private async hashPassword() {
+    this.password = await hashUserPassword(this.password, +envConfigService.env.USER_PASSWORD_SALT_ROUNDS);
+  }
+
+  toJSON(method?: "create" | "login") {
+    const o = wrap<UserEntity>(this).toObject();
+
+    if (method === "create") {
+      //...
+    }
+
+    delete o.createdAt;
+    delete o.updatedAt;
+
+    return o;
+  }
 }

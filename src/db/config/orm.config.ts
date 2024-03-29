@@ -7,6 +7,7 @@ import { envConfigService } from "../../common/provider/envConfigServiceProvider
 const rootDir = process.cwd();
 
 const ormConfig: Options = {
+  forceUtcTimezone: true,
   entities: [rootDir + "/**/*.entity.js"],
   entitiesTs: [rootDir + "/**/*.entity.ts"],
   driver: PostgreSqlDriver,

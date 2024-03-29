@@ -9,6 +9,7 @@ declare global {
       PGADMIN_DEFAULT_EMAIL: string;
       PGADMIN_DEFAULT_PASSWORD: string;
       SERVER_PORT: string;
+      USER_PASSWORD_SALT_ROUNDS: string;
     }
   }
 }
