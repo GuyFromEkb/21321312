@@ -1,3 +1,5 @@
+# Nestjs Psql MicroOrm Swagger (Socket?)
+
 ## [MicroOrm doc](https://mikro-orm.io/docs/quick-start)
 ### Устанавливаем зависимости (psql)
 `npm i @mikro-orm/core @mikro-orm/nestjs @mikro-orm/postgresql`  
