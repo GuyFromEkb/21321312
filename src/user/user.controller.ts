@@ -21,7 +21,7 @@ export class UserController {
   @ApiOperation({ summary: "Получение пользователя по id" })
   @Get(":id")
   async findOne(@Param("id", ParseUUIDPipe) id: string): Promise<UserResponse> {
-    const user = await this.userService.findOne(id);
+    const user = await this.userService.findOneById(id);
 
     return new UserResponse(user);
   }

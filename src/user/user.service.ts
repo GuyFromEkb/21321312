@@ -13,22 +13,25 @@ export class UserService {
     return await this.userRepo.findAll();
   }
 
-  async findOne(id: string): Promise<UserEntity> {
+  async findOneById(id: string): Promise<UserEntity> {
     const user = await this.userRepo.findOne({
       id,
     });
 
-    console.log("User", user);
     if (!user) throw new NotFoundException("cant find user by the id");
+
+    return user;
+  }
+
+  async findOneByEmailOrUsername(email?: string, username?: string): Promise<UserEntity | null> {
+    const user = await this.userRepo.findOne([username && { username: username }, email && { email: email }]);
 
     return user;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
     const user = await this.userRepo.findOne([
-      {
-        id,
-      },
+      { id },
       updateUserDto.email && { email: updateUserDto.email },
       updateUserDto.username && { username: updateUserDto.username },
     ]);
