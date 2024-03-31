@@ -10,8 +10,7 @@ declare global {
       PGADMIN_DEFAULT_PASSWORD: string;
       SERVER_PORT: string;
       USER_PASSWORD_SALT_ROUNDS: string;
-      JWT_ACCESS_SECRET: string;
-      JWT_REFRESH_SECRET: string;
+      JWT_SECRET: string;
     }
   }
 }

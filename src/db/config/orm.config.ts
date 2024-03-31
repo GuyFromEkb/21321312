@@ -2,7 +2,7 @@ import { Migrator } from "@mikro-orm/migrations";
 import { Options, PostgreSqlDriver } from "@mikro-orm/postgresql";
 
 //Нужен относительный путь, для package.json
-import { envConfigService } from "../../common/provider/envConfigServiceProvider";
+import { envConfigService } from "../../common/module/envConfigModule";
 
 const rootDir = process.cwd();
 

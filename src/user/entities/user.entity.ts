@@ -1,7 +1,7 @@
 import { BeforeCreate, Entity, EntityRepositoryType, Enum, Opt, Property } from "@mikro-orm/core";
 
 import { PrimaryGeneratedGuid } from "~common/decorator/PrimaryGeneratedGuid";
-import { envConfigService } from "~common/provider/envConfigServiceProvider";
+import { envConfigService } from "~common/module/envConfigModule";
 import { hashUserPassword } from "~common/util/hashUserPassword";
 
 import { UserRepository } from "./user.repository";
