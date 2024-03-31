@@ -1,56 +1,43 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  ParseUUIDPipe,
-  Patch,
-  Post,
-  UsePipes,
-} from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, UsePipes } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
-import { CreateUserDto } from "./dto/createUser.dto";
 import { UpdateUserDto } from "./dto/updateUser.dto";
-import type { UserResponse } from "./response/user.response";
+import { UserResponse } from "./response/user.response";
 import { UserService } from "./user.service";
 
-@Controller("user")
 @ApiTags("User")
+@Controller("user")
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @ApiOperation({ summary: "Создание пользователя" })
-  @HttpCode(HttpStatus.CREATED)
-  @Post()
-  @UsePipes()
-  async create(@Body() createUserDto: CreateUserDto): Promise<UserResponse> {
-    return this.userService.create(createUserDto);
-  }
   @ApiOperation({ summary: "Получение всех пользователей" })
   @Get()
-  findAll(): Promise<UserResponse[]> {
-    return this.userService.findAll();
+  async findAll(): Promise<UserResponse[]> {
+    const user = await this.userService.findAll();
+
+    return user.map((user) => new UserResponse(user));
   }
 
   @ApiOperation({ summary: "Получение пользователя по id" })
   @Get(":id")
-  findOne(@Param("id", ParseUUIDPipe) id: string): Promise<UserResponse> {
-    return this.userService.findOne(id);
+  async findOne(@Param("id", ParseUUIDPipe) id: string): Promise<UserResponse> {
+    const user = await this.userService.findOne(id);
+
+    return new UserResponse(user);
   }
 
   @ApiOperation({ summary: "Изменение пользователя по id" })
   @Patch(":id")
   @UsePipes()
-  update(
+  async update(
     @Param("id", ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserResponse> {
-    return this.userService.update(id, updateUserDto);
+    const user = await this.userService.update(id, updateUserDto);
+
+    return new UserResponse(user);
   }
+
   @ApiOperation({ summary: "Удаление пользователя по id" })
   @Delete(":id")
   async remove(@Param("id", ParseUUIDPipe) id: string): Promise<string> {

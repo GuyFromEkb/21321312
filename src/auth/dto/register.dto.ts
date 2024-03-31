@@ -2,9 +2,9 @@ import { ApiProperty, PickType } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
 import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
 
-import { UserEntity } from "../entities/user.entity";
+import { UserEntity } from "~user/entities/user.entity";
 
-export class CreateUserDto extends PickType(UserEntity, ["email", "username", "password"]) {
+export class RegisterDto extends PickType(UserEntity, ["email", "username", "password"]) {
   @ApiProperty({ example: "Bob" })
   @IsString()
   @IsNotEmpty()

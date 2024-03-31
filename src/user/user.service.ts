@@ -1,41 +1,13 @@
-import { EntityManager, wrap } from "@mikro-orm/core";
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from "@nestjs/common";
+import { wrap } from "@mikro-orm/core";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 
-import { CreateUserDto } from "./dto/createUser.dto";
 import { UpdateUserDto } from "./dto/updateUser.dto";
 import { UserEntity } from "./entities/user.entity";
 import { UserRepository } from "./entities/user.repository";
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly userRepo: UserRepository,
-    private readonly em: EntityManager,
-  ) {}
-
-  async create(createUserDto: CreateUserDto) {
-    const isUserExist = await this.userRepo.findOne([
-      { email: createUserDto.email },
-      { username: createUserDto.username },
-    ]);
-
-    if (isUserExist) {
-      throw new UnprocessableEntityException("Email or username are taken");
-    }
-
-    const newUser = new UserEntity();
-    const mergeUserData = Object.assign(newUser, createUserDto);
-
-    const user = this.userRepo.create(mergeUserData);
-    await this.em.flush();
-
-    return user;
-  }
+  constructor(private readonly userRepo: UserRepository) {}
 
   async findAll(): Promise<UserEntity[]> {
     return await this.userRepo.findAll();
@@ -46,12 +18,13 @@ export class UserService {
       id,
     });
 
+    console.log("User", user);
     if (!user) throw new NotFoundException("cant find user by the id");
 
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserEntity> {
     const user = await this.userRepo.findOne([
       {
         id,
@@ -69,7 +42,9 @@ export class UserService {
     if (!user) throw new NotFoundException("cant find user by the id");
 
     wrap(user).assign(updateUserDto);
-    await this.em.flush();
+
+    const em = this.userRepo.getEntityManager();
+    await em.flush();
 
     return user;
   }

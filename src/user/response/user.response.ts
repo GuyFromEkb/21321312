@@ -1,21 +1,28 @@
-import { ApiProperty, PickType } from "@nestjs/swagger";
+import { Exclude } from "class-transformer";
 
-import { UserEntity, UserRole } from "../entities/user.entity";
+import { UserEntity, UserRole } from "~user/entities/user.entity";
 
-export class UserResponse extends PickType(UserEntity, [
-  "email",
-  "username",
-  "password",
-  "bio",
-  "id",
-  "role",
-]) {
+export class UserResponse implements Partial<UserEntity> {
   email: string;
+
+  @Exclude()
   password: string;
+
   username: string;
-  bio?: string;
+
+  bio: string;
+
   id: string;
 
-  @ApiProperty({ enum: Object.values(UserRole) })
   role: UserRole;
+
+  @Exclude()
+  createdAt: Date;
+
+  @Exclude()
+  updatedAt: Date;
+
+  constructor(userEntity: Partial<UserEntity>) {
+    Object.assign(this, userEntity);
+  }
 }
