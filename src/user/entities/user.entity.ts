@@ -1,5 +1,15 @@
-import { BeforeCreate, Entity, EntityRepositoryType, Enum, Opt, Property } from "@mikro-orm/core";
+import {
+  BeforeCreate,
+  Collection,
+  Entity,
+  EntityRepositoryType,
+  Enum,
+  OneToMany,
+  Opt,
+  Property,
+} from "@mikro-orm/core";
 
+import { UserSessionEntity } from "~auth/entities/user-session.entity";
 import { PrimaryGeneratedGuid } from "~common/decorator/PrimaryGeneratedGuid";
 import { envConfigService } from "~common/module/envConfigModule";
 import { hashUserPassword } from "~common/util/hashUserPassword";
@@ -38,6 +48,9 @@ export class UserEntity {
 
   @Property({ onUpdate: () => new Date() })
   updatedAt: Date & Opt = new Date();
+
+  @OneToMany(() => UserSessionEntity, (userSession) => userSession.user, { hidden: true })
+  session = new Collection<UserSessionEntity>(this);
 
   @BeforeCreate()
   private async hashPassword() {

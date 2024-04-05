@@ -1,5 +1,5 @@
 import { Migrator } from "@mikro-orm/migrations";
-import { Options, PostgreSqlDriver } from "@mikro-orm/postgresql";
+import { Options, PopulateHint, PostgreSqlDriver } from "@mikro-orm/postgresql";
 
 //Нужен относительный путь, для package.json
 import { envConfigService } from "../../common/module/envConfigModule";
@@ -16,6 +16,8 @@ const ormConfig: Options = {
   user: envConfigService.env.POSTGRES_USER,
   password: envConfigService.env.POSTGRES_PASSWORD,
   dbName: envConfigService.env.POSTGRES_DB_NAME,
+  // We want our populate fetches to respect the outer filter passed in a where condition. https://mikro-orm.io/docs/populating-relations
+  populateWhere: PopulateHint.INFER,
   debug: true,
   extensions: [Migrator],
   migrations: {
