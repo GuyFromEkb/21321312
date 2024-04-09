@@ -17,7 +17,6 @@ import { Response } from "express";
 import { LoginResponse } from "~auth/response/login.response";
 import { Cookies, UserAgent } from "~common/decorator";
 import { TokenService } from "~common/module/tokenModule";
-import { ITokenUserData } from "~common/module/tokenModule/token.interface";
 import { UserResponse } from "~user/response/user.response";
 
 import { AuthService } from "./auth.service";
@@ -44,39 +43,44 @@ export class AuthController {
     return new UserResponse(user);
   }
 
+  @ApiOperation({ summary: "Обновления сессии пользователя" })
   @Get("updateToken")
   async updateToken(
     @Res() res: Response,
     @UserAgent() userAgent: string,
     @Cookies(COOKIE_REFRESH_TOKEN_KEY) refreshToken?: string,
-  ) {
-    res.status(HttpStatus.OK).json({ hello: userAgent, token: refreshToken });
+    //@ts-ignore(ReturnType): res.cookie().status().json()
+  ): Promise<{ accessToken: string }> {
+    const { accessToken, refreshTokenData } = await this.tokenService.setUserSessionAfterUpdateToken(
+      userAgent,
+      refreshToken,
+    );
+
+    res
+      .cookie(COOKIE_REFRESH_TOKEN_KEY, refreshTokenData.refreshToken, {
+        secure: true,
+        maxAge: refreshTokenData.expTimeStamp,
+        httpOnly: false,
+        path: "/",
+      })
+      .status(HttpStatus.OK)
+      .json({ accessToken });
   }
 
   @ApiOperation({ summary: "Логин пользователя" })
-  @UseInterceptors(ClassSerializerInterceptor)
   @Post("login")
   async login(
+    @Res() res: Response,
     @Body() loginDto: LoginDto,
     @UserAgent() userAgent: string,
-    @Res() res: Response,
     //@ts-ignore(ReturnType): res.cookie().status().json()
   ): Promise<LoginResponse> {
     const user = await this.authService.login(loginDto);
 
-    const tokenData: ITokenUserData = {
-      email: user.email,
-      id: user.id,
-      role: user.role,
-      username: user.username,
-    };
-
-    const [refreshTokenData, accessToken] = await Promise.all([
-      this.tokenService.createRefreshToken(tokenData),
-      this.tokenService.createAccessToken(tokenData),
-    ]);
-
-    await this.tokenService.setOrUpdateRefreshTokenToDB(refreshTokenData.refreshToken, user, userAgent);
+    const { accessToken, refreshTokenData } = await this.tokenService.setUserSessionAfterLogin(
+      user,
+      userAgent,
+    );
 
     const response = instanceToPlain(
       new LoginResponse({ user: new UserResponse(user), accessToken: accessToken }),

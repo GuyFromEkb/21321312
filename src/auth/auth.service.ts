@@ -2,7 +2,6 @@ import { EntityManager } from "@mikro-orm/core";
 import { Injectable, UnauthorizedException, UnprocessableEntityException } from "@nestjs/common";
 import { compare } from "bcrypt";
 
-import { TokenService } from "~common/module/tokenModule";
 import { UserEntity } from "~user/entities/user.entity";
 import { UserRepository } from "~user/entities/user.repository";
 import { UserService } from "~user/user.service";
@@ -16,7 +15,6 @@ export class AuthService {
     private readonly userRepo: UserRepository,
     private readonly em: EntityManager,
     private readonly userService: UserService,
-    private readonly tokenService: TokenService,
   ) {}
 
   async register(registerDto: RegisterDto): Promise<UserEntity> {
