@@ -10,7 +10,7 @@ import {
 } from "@mikro-orm/core";
 
 import { UserSessionEntity } from "~auth/entities/user-session.entity";
-import { PrimaryGeneratedGuid } from "~common/decorator/PrimaryGeneratedGuid";
+import { PrimaryGeneratedGuid } from "~common/decorator";
 import { envConfigService } from "~common/module/envConfigModule";
 import { hashUserPassword } from "~common/util/hashUserPassword";
 

@@ -1,1 +1,0 @@
-export { PrimaryGeneratedGuid } from "./PrimaryGeneratedGuid";
