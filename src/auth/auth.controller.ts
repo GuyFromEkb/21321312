@@ -10,10 +10,11 @@ import {
   UseInterceptors,
   UsePipes,
 } from "@nestjs/common";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { instanceToPlain } from "class-transformer";
 import { Request, Response } from "express";
 
+import { LoginResponse } from "~auth/response/login.response";
 import { TokenService } from "~common/module/tokenModule";
 import { ITokenUserData } from "~common/module/tokenModule/token.interface";
 import { UserResponse } from "~user/response/user.response";
@@ -41,7 +42,7 @@ export class AuthController {
     return new UserResponse(user);
   }
 
-  @ApiResponse({ status: 201, type: UserResponse, description: "Creates new user object." })
+  @ApiOperation({ summary: "Логин пользователя" })
   @UseInterceptors(ClassSerializerInterceptor)
   @Post("login")
   async login(
@@ -49,7 +50,7 @@ export class AuthController {
     @Req() req: Request,
     @Res() res: Response,
     //@ts-ignore(ReturnType): res.cookie().status().json()
-  ): Promise<{ user: UserResponse; accessToken: string }> {
+  ): Promise<LoginResponse> {
     const user = await this.authService.login(loginDto);
 
     const tokenData: ITokenUserData = {
@@ -70,7 +71,9 @@ export class AuthController {
       req.headers["user-agent"],
     );
 
-    const userResponse = instanceToPlain(new UserResponse(user));
+    const response = instanceToPlain(
+      new LoginResponse({ user: new UserResponse(user), accessToken: accessToken }),
+    );
 
     res
       .cookie("RefreshToken", refreshTokenData.refreshToken, {
@@ -80,6 +83,6 @@ export class AuthController {
         path: "/",
       })
       .status(HttpStatus.OK)
-      .json({ user: userResponse, accessToken: accessToken });
+      .json(response);
   }
 }

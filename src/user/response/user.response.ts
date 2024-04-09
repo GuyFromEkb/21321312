@@ -11,11 +11,11 @@ export class UserResponse implements Partial<UserEntity> {
   /** user email @example herberSpenser@yahoo.com */
   email: string;
 
-  /** user name @example 'Bob Walter' */
+  /** user name @example 'BobWalter' */
   username: string;
 
   /** user short information @example 'I like turtle' */
-  bio?: string;
+  bio?: string | null;
 
   /** user GUID @example b3705ec2-51f0-4baa-a4cb-b1fba6ecca14*/
   id: string;
