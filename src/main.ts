@@ -15,6 +15,10 @@ async function bootstrap() {
   const port = app.get(EnvConfigService).env.SERVER_PORT;
 
   const config = new DocumentBuilder()
+    .addBearerAuth()
+    /** Note for Swagger UI and Swagger Editor users: Cookie authentication is currently not supported for "try it out"
+     requests due to browser security restrictions. See this issue for more information. SwaggerHub does not have this limitation.
+    .addCookieAuth(COOKIE_REFRESH_TOKEN_KEY) */
     .setTitle("NestJs microOrm Jwt")
     .setDescription(`To generate and download a Swagger JSON file /api-json`)
     .setVersion("1.0")

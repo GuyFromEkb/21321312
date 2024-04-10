@@ -1,5 +1,19 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, UsePipes } from "@nestjs/common";
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  UseGuards,
+  UseInterceptors,
+  UsePipes,
+} from "@nestjs/common";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+
+import { JwtAuthGuard } from "~common/guard";
 
 import { UpdateUserDto } from "./dto/updateUser.dto";
 import { UserResponse } from "./response/user.response";
@@ -11,6 +25,9 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiOperation({ summary: "Получение всех пользователей" })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   async findAll(): Promise<UserResponse[]> {
     const user = await this.userService.findAll();
