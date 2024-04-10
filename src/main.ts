@@ -18,6 +18,7 @@ async function bootstrap() {
     .addBearerAuth()
     /** Note for Swagger UI and Swagger Editor users: Cookie authentication is currently not supported for "try it out"
      requests due to browser security restrictions. See this issue for more information. SwaggerHub does not have this limitation.
+     Крч, нужно просто залогинится через /login и токен сам прикрепится... будет всё работать (/updateToken из под свагер UI)
     .addCookieAuth(COOKIE_REFRESH_TOKEN_KEY) */
     .setTitle("NestJs microOrm Jwt")
     .setDescription(`To generate and download a Swagger JSON file /api-json`)

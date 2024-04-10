@@ -1,12 +1,10 @@
 import { Collection } from "@mikro-orm/core";
-import { Injectable } from "@nestjs/common";
 import { ApiHideProperty } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
 
 import { UserSessionEntity } from "~auth/entities/user-session.entity";
 import { UserEntity, UserRole } from "~user/entities/user.entity";
 
-@Injectable()
 export class UserResponse implements Partial<UserEntity> {
   /** user email @example herberSpenser@yahoo.com */
   email: string;
