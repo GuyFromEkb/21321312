@@ -6,16 +6,19 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   Res,
+  UseGuards,
   UseInterceptors,
   UsePipes,
 } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { instanceToPlain } from "class-transformer";
-import { Response } from "express";
+import { Request, Response } from "express";
 
 import { LoginResponse } from "~auth/response/login.response";
 import { Cookies, UserAgent } from "~common/decorator";
+import { JwtAuthGuard } from "~common/guard";
 import { TokenService } from "~common/module/tokenModule";
 import { UserResponse } from "~user/response/user.response";
 
@@ -67,10 +70,12 @@ export class AuthController {
       .json({ accessToken });
   }
 
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: "Логин пользователя" })
   @Post("login")
   async login(
     @Res() res: Response,
+    @Req() req: Request,
     @Body() loginDto: LoginDto,
     @UserAgent() userAgent: string,
     //@ts-ignore(ReturnType): res.cookie().status().json()
@@ -81,6 +86,8 @@ export class AuthController {
       user,
       userAgent,
     );
+
+    console.log("request", req.user);
 
     const response = instanceToPlain(
       new LoginResponse({ user: new UserResponse(user), accessToken: accessToken }),
